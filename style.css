@@ -306,11 +306,7 @@ img {
 }
 
 /* Hide on mobile to avoid clutter */
-@media (max-width: 768px) {
-    .hero-images {
-        display: none;
-    }
-}
+/* .hero-images display handled in mobile overrides at bottom of file */
 
 /* Scroll Info */
 .hero-scroll {
@@ -846,23 +842,44 @@ footer {
     }
 
     .vertical-timeline::after {
-        left: 31px;
+        /* Keep center line */
+        left: 50%;
+        margin-left: -2px;
+        /* Center alignment adjustment */
     }
 
     .v-timeline-item {
-        width: 100%;
-        padding-left: 70px;
-        padding-right: 25px;
+        width: 50%;
+        /* Restore 50% width for zig-zag */
+        padding: 10px;
+        /* Reduce padding to fit content */
+        /* padding-left/right will be handled by base styles, just reducing overall space */
     }
 
-    .v-timeline-item.left,
+    .v-timeline-item.left {
+        padding-right: 20px;
+        /* Add some space from center line */
+        padding-left: 0;
+    }
+
     .v-timeline-item.right {
-        left: 0;
+        padding-left: 20px;
+        /* Add some space from center line */
+        padding-right: 0;
     }
 
-    .v-timeline-item.right .v-content {
-        border-left: 3px solid var(--secondary-color);
-        border-right: none;
+    /* 
+       Base styles already handle .left and .right positioning (0 and 50%).
+       We just need to make sure we don't override them here.
+    */
+
+    /* Reduce font sizes for the narrow columns */
+    .v-content h3 {
+        font-size: 1rem;
+    }
+
+    .v-content p {
+        font-size: 0.85rem;
     }
 }
 
@@ -886,13 +903,16 @@ footer {
     }
 
     /* Tighter Timeline for small screens */
+    /* Tighter Timeline for small screens */
     .vertical-timeline::after {
-        left: 20px;
+        /* Keep center line override from above or let it cascade */
+        left: 50%;
     }
 
     .v-timeline-item {
-        padding-left: 45px;
-        padding-right: 10px;
+        /* Keep 50% width */
+        padding: 10px 5px;
+        /* Extremely tight padding */
     }
 
     .v-timeline-item.active .v-content {
@@ -955,6 +975,95 @@ footer {
 }
 
 /* Override right side static color too when active */
+/* Override right side static color too when active */
 .v-timeline-item.right.active .v-content {
     border-right-color: #ff0000;
+}
+
+/* Mobile Specific Highlighting Overrides */
+@media (max-width: 768px) {
+
+    /* Show images on mobile, positioned below text */
+    .hero {
+        flex-direction: column;
+        justify-content: flex-start;
+        /* Start from top */
+        padding-bottom: 40px;
+    }
+
+    .hero-content {
+        margin-bottom: 40px;
+        /* Space between text and images */
+    }
+
+    .hero-images {
+        display: flex;
+        position: relative;
+        width: 100%;
+        height: auto;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+        /* Allow wrapping if needed */
+    }
+
+    .float-img {
+        position: static;
+        /* Remove absolute positioning */
+        width: 100px;
+        /* Smaller size for mobile */
+        height: auto;
+        transform: none;
+        /* simple float animation handles transform */
+        /* Keep animation but maybe reduce movement? inherited is fine */
+        display: block;
+    }
+
+    /* Reset rotation for mobile for cleaner look matching 'below text' layout ? 
+       Or keep them jaunty. Let's keep them slightly easier to see. */
+    .img-1,
+    .img-2,
+    .img-3 {
+        transform: none !important;
+        /* Force reset specific rotations */
+        animation: floatMobile 4s ease-in-out infinite;
+    }
+
+    .img-1 {
+        animation-delay: 0s;
+    }
+
+    .img-2 {
+        animation-delay: 1s;
+    }
+
+    .img-3 {
+        animation-delay: 2s;
+    }
+
+    /* Fix timeline highlighting: 
+       Items are back to left/right, so we do NOT need to swap border colors.
+       Right items (on the right) should have border-right-color highlighted.
+       This is handled by the default "right.active" rule.
+       We only need to ensure mobile doesn't override it incorrectly if we had left trash behind.
+    */
+
+    /* Ensure right items keep their left border transparent and right border red */
+    .v-timeline-item.right.active .v-content {
+        /* border-right-color is already set to red by the main rule */
+        border-left-color: transparent !important;
+    }
+}
+
+@keyframes floatMobile {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
 }

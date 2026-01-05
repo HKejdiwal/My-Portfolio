@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 entry.target.classList.add('active');
             }
         });
-    }, { threshold: 0.5 });
+    }, { threshold: 0.15 });
     timelineItems.forEach(item => observer.observe(item));
 
     // 6. Mobile Navigation Toggle
